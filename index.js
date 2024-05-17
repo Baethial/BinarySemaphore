@@ -52,6 +52,7 @@ class CircularSinglyLinkedList {
     constructor() {
         this.head = new CashierNode("Processor", 1000); //Max number of transactions per client
         this.tail = null;
+        this.semaphore = new BinarySemaphore();
     }
     //Method to check if the queue is empty (No clients)
     isEmpty() {
@@ -68,6 +69,10 @@ class CircularSinglyLinkedList {
         if (client == this.head) {
             console.log("Queue is empty!");
         } else {
+
+            this.semaphore.wait();
+            console.log("El semaforo esta en rojo");
+            changeSemaphoreColor(this.semaphore.getSemaphoreState());
             let burst = client.burst;
             let maxBurst = this.head.maxBurst;
 
@@ -113,6 +118,10 @@ class CircularSinglyLinkedList {
                 blockedListInfo.push(blockedClientInfo);
                 this.moveFirstToBlocked();
                 maxBurst = 1000;
+                this.semaphore.signal();
+                changeSemaphoreColor();
+                console.log("El semaforo esta en verde");
+                changeSemaphoreColor(this.semaphore.getSemaphoreState());
             } else {
 
                 //Update the new information of the node - To populate the table
@@ -136,6 +145,9 @@ class CircularSinglyLinkedList {
                 dispatchedClientsInfo.push(clientInfo);
                 await client.removeTransactions(burst);
                 this.deleteAtStart();
+                this.semaphore.signal();
+                changeSemaphoreColor(this.semaphore.getSemaphoreState());
+                console.log("El semaforo esta en verde");
             }
         }
     }
@@ -298,6 +310,23 @@ class CircularSinglyLinkedList {
 }
 //***End of the implementation of the Circular Singly Linked List***
 
+class BinarySemaphore{
+    constructor() {
+    this.state = 1;
+    }
+
+    getSemaphoreState(){
+        return this.state;
+    }
+
+    wait(){
+        this.state --;
+    }
+
+    signal(){
+        this.state++;
+    }
+}
 
 //***Start of support methods***
 //Function to set a timeout
@@ -708,6 +737,16 @@ function populateBaseline() {
         marker.textContent = i;
         marker.style.left = `${i * 10}px`;
         baseline.appendChild(marker);
+    }
+}
+
+function changeSemaphoreColor(binaryValue) {
+    const circleElement = document.getElementById('binaryCircle');
+
+    if (binaryValue === 0) {
+        circleElement.style.backgroundColor = 'red';
+    } else {
+        circleElement.style.backgroundColor = 'green';
     }
 }
   
