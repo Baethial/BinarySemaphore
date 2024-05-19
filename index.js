@@ -87,7 +87,8 @@ class CircularSinglyLinkedList {
             if (burst > maxBurst) {
 
                 //Update the new information of the node - To populate the table
-                client.startTime = currentFinalTime;
+                //client.startTime = currentFinalTime;
+                client.startTime = Math.max(currentFinalTime, globalArrivalTime);
                 client.finalTime = client.startTime + maxBurst;
                 currentFinalTime = client.finalTime;
                 client.returnTime = client.finalTime - client.arrivalTime;
@@ -119,7 +120,7 @@ class CircularSinglyLinkedList {
                 this.moveFirstToBlocked();
                 maxBurst = 1000;
                 this.semaphore.signal();
-                changeSemaphoreColor();
+                //changeSemaphoreColor();
                 console.log("El semaforo esta en verde");
                 changeSemaphoreColor(this.semaphore.getSemaphoreState());
             } else {
