@@ -71,8 +71,12 @@ class CircularSinglyLinkedList {
         } else {
 
             this.semaphore.wait();
-            console.log("El semaforo esta en rojo");
-            changeSemaphoreColor(this.semaphore.getSemaphoreState());
+            setTimeout(() => {
+                console.log("El semaforo esta en rojo");
+                changeSemaphoreColor(this.semaphore.getSemaphoreState());
+                console.log(this.semaphore.getSemaphoreState());
+            }, 500);
+            
             let burst = client.burst;
             let maxBurst = this.head.maxBurst;
 
@@ -120,9 +124,9 @@ class CircularSinglyLinkedList {
                 this.moveFirstToBlocked();
                 maxBurst = 1000;
                 this.semaphore.signal();
-                //changeSemaphoreColor();
-                console.log("El semaforo esta en verde");
                 changeSemaphoreColor(this.semaphore.getSemaphoreState());
+                console.log("El semaforo esta en verde");
+                console.log(this.semaphore.getSemaphoreState());
             } else {
 
                 //Update the new information of the node - To populate the table
@@ -149,6 +153,7 @@ class CircularSinglyLinkedList {
                 this.semaphore.signal();
                 changeSemaphoreColor(this.semaphore.getSemaphoreState());
                 console.log("El semaforo esta en verde");
+                console.log(this.semaphore.getSemaphoreState());
             }
         }
     }
@@ -744,9 +749,9 @@ function populateBaseline() {
 function changeSemaphoreColor(binaryValue) {
     const circleElement = document.getElementById('binaryCircle');
 
-    if (binaryValue === 0) {
+    if (binaryValue == 0) {
         circleElement.style.backgroundColor = 'red';
-    } else {
+    } else if(binaryValue == 1){
         circleElement.style.backgroundColor = 'green';
     }
 }
